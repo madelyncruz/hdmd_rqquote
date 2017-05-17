@@ -1,2 +1,23 @@
 # HDMD Request Quote Module
 Creates a request a quote feature and content type
+
+## Inclusions
+
+### Product Content Type
+- Body field
+- Image field (Unlimited values)
+- Request quote checkbox field
+
+### Image Styles
+- Product Large
+- Product Medium
+- Product Thumbnail
+
+### Views page (/shop)
+- Displays the product list.
+- Uses sort feature of created date order and alphabetical order.
+
+### Other
+- Full HTML Text Format
+
+[Drupal Profile]: https://www.drupal.org/user/2523544/
