@@ -9,6 +9,7 @@ dependencies[] = field_slideshow
 dependencies[] = filefield_paths
 dependencies[] = hdmd_rqquote
 dependencies[] = image_delta_formatter
+dependencies[] = imagecache_canvasactions
 features[ctools][] = ds:ds:1
 features[ctools][] = views:views_default:3.0
 features[ds_field_settings][] = node|product|teaser
