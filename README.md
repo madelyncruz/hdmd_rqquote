@@ -24,6 +24,4 @@ Creates a request a quote feature and content type
 ### Other
 - Full HTML Text Format
 
-tessssst
-
 [Drupal Profile]: https://www.drupal.org/user/2523544/
