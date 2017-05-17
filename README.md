@@ -8,6 +8,10 @@ Creates a request a quote feature and content type
 - Image field (Unlimited values)
 - Request quote checkbox field
 
+### Display Suite
+- Includes two column layout for default view mode.
+- Includes one column layout for teaser view mode.
+
 ### Image Styles
 - Product Large
 - Product Medium

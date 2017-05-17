@@ -5,6 +5,15 @@
  */
 
 /**
+ * Implements hook_ctools_plugin_api().
+ */
+function hdmd_rqquote_content_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == "ds" && $api == "ds") {
+    return array("version" => "1");
+  }
+}
+
+/**
  * Implements hook_views_api().
  */
 function hdmd_rqquote_content_views_api($module = NULL, $api = NULL) {
@@ -19,7 +28,7 @@ function hdmd_rqquote_content_image_default_styles() {
 
   // Exported image style: product_large.
   $styles['product_large'] = array(
-    'label' => 'Product (559x514)',
+    'label' => 'Product Large',
     'effects' => array(
       4 => array(
         'name' => 'image_scale_and_crop',
@@ -39,7 +48,7 @@ function hdmd_rqquote_content_image_default_styles() {
 
   // Exported image style: product_medium.
   $styles['product_medium'] = array(
-    'label' => 'Product (254x234)',
+    'label' => 'Product Medium',
     'effects' => array(
       12 => array(
         'name' => 'image_scale_and_crop',
@@ -59,7 +68,7 @@ function hdmd_rqquote_content_image_default_styles() {
 
   // Exported image style: product_thumbnail.
   $styles['product_thumbnail'] = array(
-    'label' => 'Product (169x156)',
+    'label' => 'Product Thumbnail',
     'effects' => array(
       6 => array(
         'name' => 'image_scale_and_crop',
