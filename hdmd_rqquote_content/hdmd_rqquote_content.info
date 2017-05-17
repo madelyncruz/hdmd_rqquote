@@ -1,4 +1,5 @@
 name = HDMD Request Quote Content
+description = Creates a product content type for request quote feature
 core = 7.x
 package = HDMD
 version = 7.x-1.0
