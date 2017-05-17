@@ -17,7 +17,8 @@ Creates a request a quote feature and content type
 - Product Medium
 - Product Thumbnail
 
-### Views page (/shop)
+### Views page
+- Visit /shop to view this page.
 - Displays the product list.
 - Uses sort feature of created date order and alphabetical order.
 
