@@ -1,5 +1,6 @@
 name = HDMD Request Quote
 description = Creates a request a quote feature
+package = HDMD
 core = 7.x
 
 dependencies[] = hdmd_rqquote_content
