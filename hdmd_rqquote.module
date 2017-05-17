@@ -1,0 +1,313 @@
+<?php
+
+/**
+ * Implements hook_permission().
+ */
+function hdmd_rqquote_permission() {
+  return array(
+    'administer hdmd rqquote' => array(
+      'title' => t('Administer HDMD Request Quote'),
+      'description' => t('Ability to view the administrations page of request quote.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function hdmd_rqquote_menu() {
+  $items = array();
+  
+  $items['order-list'] = array(
+    'title' => t('Order list'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('hdmd_rqquote_order_list_page_form'),
+    'access callback' => TRUE,
+    'access arguments' => array('access content')
+  );
+  
+  $items['admin/config/user-interface/hdmd-rqquote'] = array(
+    'title' => t('HDMD Request Quote'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('hdmd_rqquote_form_admin'),
+    'access callback' => TRUE,
+    'access arguments' => array('administer hdmd rqquote'),
+    'file' => 'includes/hdmd_rqquote_form.admin.inc',
+    'file path' => drupal_get_path('module', 'hdmd_rqquote'),
+  );
+  
+  return $items;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function hdmd_rqquote_form_alter(&$form, &$form_state, $form_id) {
+  if ($rqquote_var = variable_get('_webform_rqquote_node_webform')) {
+    $rqquote_form_id = 'webform_client_form_' . $rqquote_var;
+    if ($form_id == $rqquote_form_id && isset($form['#submission']) && $form['#submission'] == FALSE) {
+      hdmd_rqquote_webform($form, $form_state);
+    }
+  }
+}
+
+/**
+* Implements hook_block_info().
+*/
+function hdmd_rqquote_block_info() {
+  $blocks = array();
+  $blocks['placed_order_list'] = array(
+    'info' => t('Placed order list'),
+  );
+  return $blocks;
+}
+
+/**
+* Implements hook_block_view()
+*/
+function hdmd_rqquote_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'placed_order_list':
+      $block['subject'] = '';
+      $block['content'] = _hdmd_placed_orders_block();
+    break;
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function hdmd_rqquote_webform(&$form, &$form_state) {
+  $rqquote_component_render = variable_get('_webform_rqquote_node_webform_component_render');
+  // Load the parameters
+  $params = drupal_get_query_parameters();
+  $orders = array();
+  $valid_order = TRUE;
+  
+  // Check if has placed orders in session
+  // Checks if has orders passed in the parameter
+  if (isset($_SESSION['placed_orders']) && isset($params['orders'])) {
+    $rqquote_var = variable_get('_webform_rqquote_node_webform');
+    // Explode the parameter order ids
+    $param_ids = explode(',', $params['orders']);
+    // Loop through the orders parameter
+    // Use the node id from the parameter as the key to be able to load node using the _hdmd_placed_orders_rendered() function
+    foreach ($param_ids as $nid) {
+      $orders[$nid] = $nid;
+    }
+    $form['#submit'][] = 'hdmd_rqquote_webform_submit';
+    
+    if (array_diff_key($orders, $_SESSION['placed_orders'])) {
+      $valid_order = FALSE;
+    }
+  }
+  
+  $data = _hdmd_placed_orders_rendered($orders);
+  
+  if (empty($data['rows'])) {
+    $valid_order = FALSE;
+  }
+  
+  if (!$valid_order) {
+    drupal_not_found();
+    exit;
+  }
+  
+  if (isset($form['submitted'][$rqquote_component_render])) {
+    $form['submitted'][$rqquote_component_render]['#access'] = FALSE;
+    $form['submitted'][$rqquote_component_render . '_2']['#weight'] = -1;
+    $form['submitted'][$rqquote_component_render . '_2']['#type'] = 'markup';
+    $form['submitted'][$rqquote_component_render . '_2']['#markup'] = isset($data) && !empty($data['rows']) ? theme('table', array(
+      'header' => $data['header'], 'rows' => $data['rows'], TRUE)) : '';
+  }
+}
+
+function hdmd_rqquote_webform_submit(&$form, &$form_state) {
+  unset($_SESSION['placed_orders']);
+}
+
+function hdmd_rqquote_order_list_form($form, &$form_state) {
+  $submit_disabled = FALSE;
+  $submit_value = t('Place Order');
+  $nid = isset($form_state['build_info']['args']) && !empty($form_state['build_info']['args']) ? $form_state['build_info']['args'][0] : array();
+  
+  if (isset($_SESSION['placed_orders']) && !empty($_SESSION['placed_orders'])) {
+    if (isset($_SESSION['placed_orders'][$nid])) {
+      $submit_disabled = TRUE;
+      $submit_value = t('Order Placed');
+    }
+  }
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => $submit_value,
+    '#disabled' => $submit_disabled,
+    '#name' => $nid
+  );
+  return $form;
+}
+
+function hdmd_rqquote_order_list_form_submit(&$form, &$form_state) {
+  foreach ($form_state['input'] as $key => $input) {
+    if (!is_numeric($key)) continue;
+    // Wrap the node
+    // Temporarily save the node in session
+    // Display a message when the node selected has been added into order list
+    $node_wrapper = entity_metadata_wrapper('node', $key);
+    $_SESSION['placed_orders'][$key] = $node_wrapper->title->value();
+    drupal_set_message(t("%title has been added to your <a href='/order-list'>order list</a>.", array('%title' => $node_wrapper->title->value())), 'info');
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function hdmd_rqquote_field_formatter_info() {
+  $settings = array();
+  $settings['rqquote_status'] = array(
+    'label' => t('Request form'),
+    'field types' => array('list_boolean'),
+    'settings' => array(
+      'linked' => FALSE,
+    )
+  );
+  return $settings;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function hdmd_rqquote_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $field_column = key($field['columns']);
+  $elements = array();
+  $settings = $display['settings'];
+
+  switch ($display['type']) {
+    case 'rqquote_status':
+      $rendered_form = drupal_get_form('hdmd_rqquote_order_list_form', $entity->nid);
+      $elements[0] = array('#markup' => render($rendered_form));
+      break;
+  }
+  return $elements;
+}
+
+function hdmd_rqquote_order_list_page_form($form, &$form_state) {
+  $form['orders_placed'] = array(
+    '#type' => 'container',
+    '#attributes' => array('class' => array('order-list'))
+  );
+  
+  // Check if there's any orders placed
+  $order_ids = array();
+  if (isset($_SESSION['placed_orders']) && !empty($_SESSION['placed_orders'])) {
+    $order_ids = $_SESSION['placed_orders'];
+  }
+  
+  $orders = _hdmd_placed_orders_rendered($order_ids);
+  $form['orders_placed']['items'] = array(
+    '#type' => 'tableselect',
+    '#title' => 'Orders table',
+    '#header' => $orders['header'],
+    '#options' => $orders['rows'],
+    '#multiple' => true,
+    '#empty' => t('No orders has been placed yet.'),
+  );
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Proceed to the next step'),
+    '#name' => 'submit_order',
+    '#disabled' => !variable_get('_webform_rqquote_node_webform') ? TRUE : FALSE,
+    '#access' => !empty($orders['rows']) ? TRUE : FALSE,
+  );
+  $form['actions']['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Remove selected from the list'),
+    '#name' => 'remove_order',
+    '#access' => !empty($orders['rows']) ? TRUE : FALSE,
+  );
+    
+  return $form;
+}
+
+function hdmd_rqquote_order_list_page_form_submit(&$form, &$form_state) {
+  $orders = array_filter($form_state['input']['items']);
+  $nid = variable_get('_webform_rqquote_node_webform');
+  switch ($form_state['triggering_element']['#name']) {
+    // Get the node ids of the selected orders
+    // Redirect into the form submission
+    case 'submit_order':
+      $url_order = url('node/' . $nid, array('absolute' => TRUE, 'query' => array('orders' => implode(',', $orders))));
+      $form_state['redirect'] = $url_order;
+      break;
+    // Remove the selected orders
+    case 'remove_order':
+      foreach ($orders as $order) {
+        $node_wrapper = entity_metadata_wrapper('node', $order);
+        unset($_SESSION['placed_orders'][$order]);
+        drupal_set_message(t('%title has been removed from the list.', array('%title' => $node_wrapper->title->value())), 'info');
+      }
+      break;
+  }
+}
+
+function hdmd_rqquote_order_list_page_form_validate(&$form, &$form_state) {
+  // Make sure that the user selected a product before executing "Submit" and "Remove" button
+  $lists = array_filter($form_state['input']['items']);
+  if (empty($lists)) form_set_error('input][lists', t('Please select a product.'));
+}
+
+function _hdmd_placed_orders_block() {
+  $output = t('Request Quote (0)');
+  // Checks if "Request quote" session is set
+  if (isset($_SESSION['placed_orders']) && !empty($_SESSION['placed_orders'])) {
+    $output = t('Request Quote (@count)', array('@count' => count($_SESSION['placed_orders'])));
+  }
+  return l($output, 'order-list');
+}
+
+function _hdmd_placed_orders_rendered($order_ids) {
+  $data = array();
+  $data['header'] = array(
+    'image' => t('Image'),
+    'title' => t('Product'),
+    'description' => t('Description'),
+  );
+  $data['rows'] = array();
+  foreach ($order_ids as $nid => $value) {
+    if (!is_numeric($nid)) {
+      continue;
+    }
+    // Load the node
+    if ($node = node_load($nid)) {
+      // The node must be published
+      if ($node->status == 0 || $node->type != 'product') {
+        continue;
+      }
+      // Render the node image
+      if (isset($node->field_images) && !empty($node->field_images)) {
+        $image = theme('image_style', array(
+          'path' => $node->field_images[LANGUAGE_NONE][0]['uri'], 'style_name' => 'thumbnail'));
+      }
+      // Render the node description
+      if (isset($node->body) && !empty($node->body)) {
+        $description = strip_tags(substr($node->body[LANGUAGE_NONE][0]['value'], 0, 100));
+      }
+      $data['rows'][$nid]['image'] = isset($image) ? $image : '';
+      $data['rows'][$nid]['title'] = $node->title;
+      $data['rows'][$nid]['description'] = isset($description) ? $description : '';
+    }
+  }
+  return $data;
+}
+
+function hdmd_rqquote_webform_component_display_alter(&$element, &$component) {
+  if ($element['#webform_component']['form_key'] == variable_get('_webform_rqquote_node_webform_component_render')) {
+    $order_ids = !empty($element['#value']) ? explode(',', $element['#value']) : array();
+    foreach ($order_ids as $nid) {
+      $order_ids[$nid] = $nid;
+    }
+    $orders = _hdmd_placed_orders_rendered($order_ids);
+    $element['#value'] = !empty($orders['rows']) ? theme('table', array('header' => $orders['header'], 'rows' => $orders['rows'])) : '';
+  }
+}

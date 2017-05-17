@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the HDMD Request Quote Content feature.
+ */
+
+include_once 'hdmd_rqquote_content.features.inc';

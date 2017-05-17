@@ -1,0 +1,7 @@
+name = HDMD Request Quote
+description = Creates a request a quote feature
+core = 7.x
+
+dependencies[] = webform_html_textarea
+
+configure = admin/config/user-interface/hdmd-rqquote
