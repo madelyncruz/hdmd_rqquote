@@ -1,5 +1,3 @@
-test2
-
 # HDMD Request Quote Module
 Creates a request a quote feature and content type
 
@@ -27,5 +25,5 @@ Creates a request a quote feature and content type
 ### Other
 - Full HTML Text Format
 
-
 [Drupal Profile]: https://www.drupal.org/user/2523544/
+
