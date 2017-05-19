@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-TEST
+another test
 
-=======
->>>>>>> c90031874f81e6ba9209445da8edf02c7def4798
 # HDMD Request Quote Module
 Creates a request a quote feature and content type
 
