@@ -1,17 +1,17 @@
 <?php
 
-function hdmd_rqquote_form_admin($form, &$form_state) {
-  if ($options = _webform_rqquote_node_webform_list()) {
+function request_quote_form_admin($form, &$form_state) {
+  if ($options = _request_quote_node_webform_list()) {
     $form['webform'] = array(
       '#type' => 'select',
       '#title' => t('Choose webform'),
       '#options' => $options,
       '#description' => t('Attach the order list into the webform.'),
-      '#default_value' => variable_get('_webform_rqquote_node_webform'),
+      '#default_value' => variable_get('_request_quote_node_webform'),
       '#required' => TRUE,
       '#ajax' => array(
         'wrapper' => 'block-system-main > div > form',
-        'callback' => 'hdmd_rqquote_form_admin_option_callback'
+        'callback' => 'request_quote_form_admin_option_callback'
       )
     );
     
@@ -19,15 +19,15 @@ function hdmd_rqquote_form_admin($form, &$form_state) {
       $nid = $form_state['values']['webform'];
     }
     else {
-      $nid = variable_get('_webform_rqquote_node_webform');
+      $nid = variable_get('_request_quote_node_webform');
     }
     
     $form['webform_component_render'] = array(
       '#type' => 'select',
       '#title' => t('Choose component'),
-      '#options' => !empty(_webform_rqquote_node_component_list($nid)) ? _webform_rqquote_node_component_list($nid) : array('' => t('- No available component -')),
+      '#options' => !empty(_webform_request_quote_node_component_list($nid)) ? _webform_request_quote_node_component_list($nid) : array('' => t('- No available component -')),
       '#description' => t('Select to which component should the display be rendered.'),
-      '#default_value' => variable_get('_webform_rqquote_node_webform_component_render'),
+      '#default_value' => variable_get('_request_quote_node_webform_component_render'),
       '#required' => TRUE,
     );
     $form['webform_component_help'] = array(
@@ -50,18 +50,18 @@ function hdmd_rqquote_form_admin($form, &$form_state) {
   return $form;
 }
 
-function hdmd_rqquote_form_admin_option_callback($form, &$form_state) {
+function request_quote_form_admin_option_callback($form, &$form_state) {
   return $form;
 }
 
-function hdmd_rqquote_form_admin_submit($form, &$form_state) {
-  variable_set('_webform_rqquote_node_webform', $form_state['values']['webform']);
-  variable_set('_webform_rqquote_node_webform_component_render', $form_state['values']['webform_component_render']);
+function request_quote_form_admin_submit($form, &$form_state) {
+  variable_set('_request_quote_node_webform', $form_state['values']['webform']);
+  variable_set('_request_quote_node_webform_component_render', $form_state['values']['webform_component_render']);
   
   drupal_set_message(t('The configuration options have been saved.'));
 }
 
-function _webform_rqquote_node_webform_list() {
+function _request_quote_node_webform_list() {
   $query = db_select('webform', 'w')
           ->condition('w.status', 1)
           ->fields('w', array('nid'));
@@ -78,7 +78,7 @@ function _webform_rqquote_node_webform_list() {
   return isset($options) ? $options : array();
 }
 
-function _webform_rqquote_node_component_list($nid) {
+function _webform_request_quote_node_component_list($nid) {
   $query = db_select('webform_component', 'c')
           ->condition('c.nid', $nid)
           ->condition('c.type', array('html_textarea'))

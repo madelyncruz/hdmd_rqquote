@@ -43,9 +43,10 @@ function request_quote_menu() {
  * Implements hook_form_alter().
  */
 function request_quote_form_alter(&$form, &$form_state, $form_id) {
-  if ($rqquote_var = variable_get('_request_quote_node_webform')) {
-    $rqquote_form_id = 'webform_client_form_' . $rqquote_var;
-    if ($form_id == $rqquote_form_id && isset($form['#submission']) && $form['#submission'] == FALSE) {
+  if ($webform = variable_get('_request_quote_node_webform')) {
+    $webform_id = 'webform_client_form_' . $webform;
+
+    if ($form_id == $webform_id && isset($form['#submission']) && $form['#submission'] == FALSE) {
       request_quote_webform($form, $form_state);
     }
   }
@@ -81,6 +82,7 @@ function request_quote_block_view($delta = '') {
  */
 function request_quote_webform(&$form, &$form_state) {
   $rqquote_component_render = variable_get('_request_quote_node_webform_component_render');
+
   // Load the parameters
   $params = drupal_get_query_parameters();
   $orders = array();
@@ -89,7 +91,7 @@ function request_quote_webform(&$form, &$form_state) {
   // Check if has placed orders in session
   // Checks if has orders passed in the parameter
   if (isset($_SESSION['placed_orders']) && isset($params['orders'])) {
-    $rqquote_var = variable_get('_request_quote_node_webform');
+    $webform = variable_get('_request_quote_node_webform');
     // Explode the parameter order ids
     $param_ids = explode(',', $params['orders']);
     // Loop through the orders parameter
@@ -165,13 +167,14 @@ function request_quote_order_list_form_submit(&$form, &$form_state) {
  */
 function request_quote_field_formatter_info() {
   $settings = array();
-  $settings['rqquote_status'] = array(
-    'label' => t('Request form'),
+  $settings['request_quote_status'] = array(
+    'label' => t('Request form status'),
     'field types' => array('list_boolean'),
     'settings' => array(
       'linked' => FALSE,
     )
   );
+  
   return $settings;
 }
 
@@ -184,7 +187,7 @@ function request_quote_field_formatter_view($entity_type, $entity, $field, $inst
   $settings = $display['settings'];
 
   switch ($display['type']) {
-    case 'rqquote_status':
+    case 'request_quote_status':
       $rendered_form = drupal_get_form('request_quote_order_list_form', $entity->nid);
       $elements[0] = array('#markup' => render($rendered_form));
       break;

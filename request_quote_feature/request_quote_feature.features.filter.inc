@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * hdmd_rqquote_content.features.filter.inc
+ * request_quote_feature.features.filter.inc
  */
 
 /**
  * Implements hook_filter_default_formats().
  */
-function hdmd_rqquote_content_filter_default_formats() {
+function request_quote_feature_filter_default_formats() {
   $formats = array();
 
   // Exported format: Full HTML Text.

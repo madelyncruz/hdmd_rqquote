@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * hdmd_rqquote_content.views_default.inc
+ * request_quote_feature.views_default.inc
  */
 
 /**
  * Implements hook_views_default_views().
  */
-function hdmd_rqquote_content_views_default_views() {
+function request_quote_feature_views_default_views() {
   $export = array();
 
   $view = new view();

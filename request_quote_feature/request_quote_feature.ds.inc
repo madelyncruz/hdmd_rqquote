@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * hdmd_rqquote_content.ds.inc
+ * request_quote_feature.ds.inc
  */
 
 /**
  * Implements hook_ds_field_settings_info().
  */
-function hdmd_rqquote_content_ds_field_settings_info() {
+function request_quote_feature_ds_field_settings_info() {
   $export = array();
 
   $ds_fieldsetting = new stdClass();
@@ -36,7 +36,7 @@ function hdmd_rqquote_content_ds_field_settings_info() {
 /**
  * Implements hook_ds_layout_settings_info().
  */
-function hdmd_rqquote_content_ds_layout_settings_info() {
+function request_quote_feature_ds_layout_settings_info() {
   $export = array();
 
   $ds_layout = new stdClass();
@@ -55,7 +55,7 @@ function hdmd_rqquote_content_ds_layout_settings_info() {
         1 => 'product:commerce_price',
         2 => 'body',
         3 => 'field_product',
-        4 => 'field_rqquote',
+        4 => 'field_request_quote',
       ),
     ),
     'fields' => array(
@@ -63,7 +63,7 @@ function hdmd_rqquote_content_ds_layout_settings_info() {
       'product:commerce_price' => 'right',
       'body' => 'right',
       'field_product' => 'right',
-      'field_rqquote' => 'right',
+      'field_request_quote' => 'right',
     ),
     'classes' => array(
       'layout_class' => array(

@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * hdmd_rqquote_content.features.field_instance.inc
+ * request_quote_feature.features.field_instance.inc
  */
 
 /**
  * Implements hook_field_default_field_instances().
  */
-function hdmd_rqquote_content_field_default_field_instances() {
+function request_quote_feature_field_default_field_instances() {
   $field_instances = array();
 
   // Exported field_instance: 'node-product-body'.
@@ -181,8 +181,8 @@ function hdmd_rqquote_content_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-product-field_rqquote'.
-  $field_instances['node-product-field_rqquote'] = array(
+  // Exported field_instance: 'node-product-field_request_quote'.
+  $field_instances['node-product-field_request_quote'] = array(
     'bundle' => 'product',
     'default_value' => array(
       0 => array(
@@ -194,11 +194,11 @@ function hdmd_rqquote_content_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'hdmd_rqquote',
+        'module' => 'request_quote',
         'settings' => array(
           'linked' => FALSE,
         ),
-        'type' => 'rqquote_status',
+        'type' => 'request_quote_status',
         'weight' => 4,
       ),
       'teaser' => array(
@@ -209,7 +209,7 @@ function hdmd_rqquote_content_field_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_rqquote',
+    'field_name' => 'field_request_quote',
     'label' => 'Enable request a quote button',
     'required' => 0,
     'settings' => array(

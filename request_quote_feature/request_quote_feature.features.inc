@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * hdmd_rqquote_content.features.inc
+ * request_quote_feature.features.inc
  */
 
 /**
  * Implements hook_ctools_plugin_api().
  */
-function hdmd_rqquote_content_ctools_plugin_api($module = NULL, $api = NULL) {
+function request_quote_feature_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "ds" && $api == "ds") {
     return array("version" => "1");
   }
@@ -16,14 +16,14 @@ function hdmd_rqquote_content_ctools_plugin_api($module = NULL, $api = NULL) {
 /**
  * Implements hook_views_api().
  */
-function hdmd_rqquote_content_views_api($module = NULL, $api = NULL) {
+function request_quote_feature_views_api($module = NULL, $api = NULL) {
   return array("api" => "3.0");
 }
 
 /**
  * Implements hook_image_default_styles().
  */
-function hdmd_rqquote_content_image_default_styles() {
+function request_quote_feature_image_default_styles() {
   $styles = array();
 
   // Exported image style: product_large.
@@ -92,7 +92,7 @@ function hdmd_rqquote_content_image_default_styles() {
 /**
  * Implements hook_node_info().
  */
-function hdmd_rqquote_content_node_info() {
+function request_quote_feature_node_info() {
   $items = array(
     'product' => array(
       'name' => t('Product'),

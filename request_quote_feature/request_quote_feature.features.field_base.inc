@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * hdmd_rqquote_content.features.field_base.inc
+ * request_quote_feature.features.field_base.inc
  */
 
 /**
  * Implements hook_field_default_field_bases().
  */
-function hdmd_rqquote_content_field_default_field_bases() {
+function request_quote_feature_field_default_field_bases() {
   $field_bases = array();
 
   // Exported field_base: 'body'.
@@ -59,13 +59,13 @@ function hdmd_rqquote_content_field_default_field_bases() {
     'type' => 'image',
   );
 
-  // Exported field_base: 'field_rqquote'.
-  $field_bases['field_rqquote'] = array(
+  // Exported field_base: 'field_request_quote'.
+  $field_bases['field_request_quote'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_rqquote',
+    'field_name' => 'field_request_quote',
     'field_permissions' => array(
       'type' => 0,
     ),
