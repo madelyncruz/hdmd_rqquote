@@ -3,7 +3,7 @@
 /**
  * Implements hook_uninstall().
  */
-function hdmd_rqquote_uninstall() {
-  variable_del('_webform_rqquote_node_webform');
-  variable_del('_webform_rqquote_node_webform_component_render');
+function request_quote_uninstall() {
+  variable_del('_request_quote_node_webform');
+  variable_del('_request_quote_node_webform_component_render');
 }
