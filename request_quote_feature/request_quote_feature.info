@@ -1,4 +1,4 @@
-name = Request Quote
+name = Request Quote Feature
 description = Creates a product content type for request quote feature
 core = 7.x
 package = Features
