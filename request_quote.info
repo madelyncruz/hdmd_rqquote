@@ -1,9 +1,8 @@
-name = HDMD Request Quote
-description = Creates a request a quote feature
-package = HDMD
+name = Request Quote
+description = Creates a request a quote feature.
 core = 7.x
 
-dependencies[] = hdmd_rqquote_content
+dependencies[] = request_quote_feature
 dependencies[] = webform_html_textarea
 
-configure = admin/config/user-interface/hdmd-rqquote
+configure = admin/config/user-interface/request-quote
